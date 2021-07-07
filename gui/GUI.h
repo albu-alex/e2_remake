@@ -25,10 +25,10 @@
 class GUI: public QWidget ,public Observer{
     Q_OBJECT
 private:
-    std::string ethnologist_name;
+    std::string ethnologist_name, ethnologist_thematicArea;
     Ethnologist& ethnologist;
     BuildingRepository& buildingRepository;
-    QLineEdit* description, *location;
+    QLineEdit* description, *location, *id;
     AbstractModel* table;
     QTableView* tableView;
     QSortFilterProxyModel* filterProxyModel;
@@ -40,6 +40,10 @@ public:
     void connectSignalAndSlots();
     void update() override;
     int getSelectedIndex();
+public slots:
+    void addButton_handler();
+    void updateLocationButton_handler();
+    void updateDescriptionButton_handler();
 };
 
 
