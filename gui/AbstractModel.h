@@ -6,6 +6,7 @@
 #include "BuildingRepository.h"
 #include <QAbstractTableModel>
 #include <QFont>
+#include <QBrush>
 #define NULL_NAME "AEIOU"
 #define QT_ABSTRACTMODEL_H
 
@@ -13,10 +14,11 @@
 class AbstractModel:public QAbstractTableModel {
 private:
     BuildingRepository& buildingRepository;
+    std::string thematicArea;
     const int font_size = 15;
     const std::string font_name = "Times New Roman";
 public:
-    explicit AbstractModel(BuildingRepository& _buildingRepository, QObject* parent= nullptr);
+    explicit AbstractModel(BuildingRepository& _buildingRepository, const std::string& _thematicArea, QObject* parent= nullptr);
     ~AbstractModel() override;
     int rowCount(const QModelIndex &parent = QModelIndex{}) const override;
     int columnCount(const QModelIndex &parent = QModelIndex{}) const override;

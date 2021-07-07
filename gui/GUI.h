@@ -41,6 +41,7 @@ public:
     void update() override;
     int getSelectedIndex();
     void pickRandomColor();
+    void checkIfUpdatePossible();
 public slots:
     void addButton_handler();
     void updateLocationButton_handler();

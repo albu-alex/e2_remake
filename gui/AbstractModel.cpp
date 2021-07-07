@@ -5,7 +5,7 @@
 #include "AbstractModel.h"
 
 
-AbstractModel::AbstractModel(BuildingRepository &_buildingRepository, QObject *parent):buildingRepository(_buildingRepository), QAbstractTableModel{parent} {;}
+AbstractModel::AbstractModel(BuildingRepository &_buildingRepository, const std::string& _thematicArea, QObject *parent):buildingRepository(_buildingRepository), QAbstractTableModel{parent}, thematicArea(_thematicArea) {;}
 
 AbstractModel::~AbstractModel(){
     ;
@@ -39,6 +39,11 @@ QVariant AbstractModel::data(const QModelIndex &index, int role) const {
         if(column == 3){
             return QString::fromStdString(currentBuilding.getLocation());
         }
+    }
+    if(role == Qt::BackgroundRole){
+        Building currentBuilding = this->buildingRepository.getBuildings()[row];
+        if(currentBuilding.getThematicArea() == this->thematicArea)
+            return QBrush{QColor{0, 0, 255}};
     }
     return QVariant();
 }

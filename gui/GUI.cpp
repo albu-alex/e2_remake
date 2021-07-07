@@ -22,6 +22,8 @@ GUI::~GUI(){
 
 void GUI::initGUI() {
     QVBoxLayout* main = new QVBoxLayout{this};
+    this->ethnologist_name = this->ethnologist.getName();
+    this->ethnologist_thematicArea = this->ethnologist.getThematicArea();
     this->description = new QLineEdit{};
     this->location = new QLineEdit{};
     this->id = new QLineEdit{};
@@ -29,7 +31,7 @@ void GUI::initGUI() {
     this->updateLocation = new QPushButton{"Update location"};
     this->updateDescription = new QPushButton{"Update description"};
 
-    this->table = new AbstractModel{this->buildingRepository};
+    this->table = new AbstractModel{this->buildingRepository, this->ethnologist_thematicArea};
     this->tableView = new QTableView{};
     this->filterProxyModel = new QSortFilterProxyModel{};
     this->filterProxyModel->setSourceModel(this->table);
@@ -51,8 +53,6 @@ void GUI::initGUI() {
     updates->addRow("ID", this->id);
     main->addLayout(updates);
 
-    this->ethnologist_name = this->ethnologist.getName();
-    this->ethnologist_thematicArea = this->ethnologist.getThematicArea();
     QWidget::setWindowTitle(QString::fromStdString(this->ethnologist_name));
     QPalette qPalette = palette();
     qPalette.setColor(QPalette::Background, Qt::lightGray);
@@ -104,12 +104,49 @@ void GUI::addButton_handler() {
 
 void GUI::connectSignalAndSlots() {
     QObject::connect(this->add, &QPushButton::clicked, this, &GUI::addButton_handler);
+    QObject::connect(this->updateDescription, &QPushButton::clicked, this, &GUI::updateDescriptionButton_handler);
+    QObject::connect(this->updateLocation, &QPushButton::clicked, this, &GUI::updateLocationButton_handler);
+    QObject::connect(this->tableView, &QTableView::clicked, this, &GUI::checkIfUpdatePossible);
+}
+
+void GUI::checkIfUpdatePossible() {
+    int index = this->getSelectedIndex();
+    std::string thematicArea = this->filterProxyModel->index(index, 2).data().toString().toStdString();
+    if(thematicArea != this->ethnologist_thematicArea){
+        this->updateDescription->setEnabled(false);
+        this->updateLocation->setEnabled(false);
+        return;
+    }
+    this->updateDescription->setEnabled(true);
+    this->updateLocation->setEnabled(true);
 }
 
 void GUI::updateDescriptionButton_handler() {
-    ;
+    std::string newDescription = this->description->text().toStdString();
+    if(newDescription.empty()){
+        QMessageBox::critical(this, "Error", "New description cannot be empty!");
+        return;
+    }
+    int index = this->getSelectedIndex();
+    std::string ID = this->filterProxyModel->index(index, 0).data().toString().toStdString();
+    std::string _description = this->filterProxyModel->index(index, 1).data().toString().toStdString();
+    std::string thematicArea = this->filterProxyModel->index(index, 2).data().toString().toStdString();
+    std::string _location = this->filterProxyModel->index(index, 3).data().toString().toStdString();
+    Building newBuilding{ID, _description, thematicArea, _location};
+    this->buildingRepository.updateDescription(newBuilding, newDescription);
 }
 
 void GUI::updateLocationButton_handler() {
-    ;
+    std::string newLocation = this->location->text().toStdString();
+    if(newLocation.empty()){
+        QMessageBox::critical(this, "Error", "New location cannot be empty!");
+        return;
+    }
+    int index = this->getSelectedIndex();
+    std::string ID = this->filterProxyModel->index(index, 0).data().toString().toStdString();
+    std::string _description = this->filterProxyModel->index(index, 1).data().toString().toStdString();
+    std::string thematicArea = this->filterProxyModel->index(index, 2).data().toString().toStdString();
+    std::string _location = this->filterProxyModel->index(index, 3).data().toString().toStdString();
+    Building newBuilding{ID, _description, thematicArea, _location};
+    this->buildingRepository.updateLocation(newBuilding, newLocation);
 }
