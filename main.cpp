@@ -6,6 +6,7 @@
 #include <QtWidgets>
 
 int main(int argc, char** argv){
+    srand(time(nullptr));
     QApplication a{argc, argv};
     EthnologistRepository ethnologistRepository{};
     BuildingRepository buildingRepository{};

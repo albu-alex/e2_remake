@@ -58,7 +58,22 @@ void GUI::initGUI() {
     qPalette.setColor(QPalette::Background, Qt::lightGray);
     QWidget::setAutoFillBackground(true);
     QWidget::setPalette(qPalette);
-    qPalette.setColor(QPalette::Base, Qt::red);
+    this->pickRandomColor();
+}
+
+void GUI::pickRandomColor() {
+    std::vector<Qt::GlobalColor> colors;
+    colors.emplace_back(Qt::red);
+    colors.emplace_back(Qt::darkRed);
+    colors.emplace_back(Qt::yellow);
+    colors.emplace_back(Qt::darkYellow);
+    colors.emplace_back(Qt::magenta);
+    colors.emplace_back(Qt::darkMagenta);
+    colors.emplace_back(Qt::green);
+    colors.emplace_back(Qt::darkGreen);
+    int choice = rand()%8;
+    QPalette qPalette = palette();
+    qPalette.setColor(QPalette::Base, colors[choice]);
     this->tableView->setAutoFillBackground(true);
     this->tableView->setPalette(qPalette);
 }

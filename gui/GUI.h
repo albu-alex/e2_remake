@@ -40,6 +40,7 @@ public:
     void connectSignalAndSlots();
     void update() override;
     int getSelectedIndex();
+    void pickRandomColor();
 public slots:
     void addButton_handler();
     void updateLocationButton_handler();
